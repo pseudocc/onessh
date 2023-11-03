@@ -1,0 +1,57 @@
+#!/bin/bash -a
+# vim: noet
+
+# READ environment variables
+[ -f "$HOME/.onesshrc" ] && source "$HOME/.onesshrc"
+
+if [ -z "$ONESSH_LIB" ]; then 
+	ONESSH_LIB="$(dirname "$0")"
+fi
+
+source "$ONESSH_LIB/utils.sh"
+
+print_help() {
+	echo "Available commands:"
+	for file in "$ONESSH_LIB/commands"/*; do
+		if [ -x "$file" ]; then
+			printf "    $FG_RED%-12s$FG_RESET %s\n" \
+				"$(basename "$file")" "$($file --short-help)"
+		fi
+	done
+	printf "    $FG_YELLOW%-12s$FG_RESET %s\n" \
+		"help" "Show this help message"
+	printf "    $FG_YELLOW%-12s$FG_RESET %s\n" \
+		"exit" "Exit this shell"
+}
+
+main() {
+	local line command args
+	while print_prompt && IFS=" " read -ra line; do
+		if [ "${#line[@]}" -eq 0 ]; then
+			continue
+		fi
+
+		command="${line[0]}"
+		args="${line[*]:1}"
+		if [ -n "$ONESSH_DEBUG" ]; then
+			print_debug "command=$command args=$args"
+			sleep 1
+		fi
+
+		if has_command "$command"; then
+			# shellcheck disable=SC2086
+			"$ONESSH_LIB/commands/$command" $args 
+		elif [ "$command" = "exit" ]; then
+			exit "${args:-0}"
+		elif [ "$command" = "help" ]; then
+			print_help
+		else
+			echo "Command not found: $command"
+		fi
+	done
+}
+
+trap exit_alt_screen EXIT
+enter_alt_screen
+print_welcome
+main

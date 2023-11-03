@@ -1,0 +1,36 @@
+#!/bin/bash
+# vim: noet
+
+if [ "$1" = "--short-help" ]; then
+	echo "Show the status of this device"
+	exit 0
+fi
+
+if [ ! -d "$ONESSH_LIB" ]; then
+	echo "ONESSH_LIB is not set"
+	exit 1
+fi
+
+main() {
+	local user_name scheduled_checkout
+	source "$ONESSH_LIB/reserve.sh"
+
+	for key_file in "$ONESSH_KEY_DIR"/*; do
+		if ! has_checked_in "$key_file"; then
+			continue
+		fi
+
+		user_name="$(basename "$key_file")"
+		echo "User [$user_name] has checked-in"
+		scheduled_checkout="$(atq -qz | grep -e "^$USER" | \
+			awk '{print $3,$4,$5,$6}')"
+
+		if [ -n "$scheduled_checkout" ]; then
+			echo "Scheduled checkout time: $scheduled_checkout"
+		fi
+		exit 0
+	done
+
+	echo "No user has checked-in"
+	echo "You can call check-in command to reserve this device"
+}

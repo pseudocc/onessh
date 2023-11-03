@@ -1,0 +1,77 @@
+#!/bin/bash
+# vim: noet
+
+if [ "$1" = "--short-help" ]; then
+	echo "Check-out(release) this device"
+	exit 0
+fi
+
+if [ ! -d "$ONESSH_LIB" ]; then
+	echo "ONESSH_LIB is not set"
+	exit 1
+fi
+
+# --help/-h
+print_help() {
+	echo "Usage: checkout <user_name> [checkout_time] [options]"
+	echo "    Check-out(release) this device for <user_name>, and check"
+	echo "    it out at <checkout_time> if specified"
+	echo "Options:"
+	echo "    --help,-h:     Print this help message"
+	echo "Positional arguments:"
+	echo "    user_name:     The user name of your Lanuchpad account"
+	echo "    checkout_time: (optional)"
+	echo "        The time to check out this device, in at(1) format"
+	echo "        if not specified, this device will be checked out"
+	echo "        immediately"
+	echo "        E.g. now + 1 hour, midnight, 2pm tomorrow"
+}
+
+main() {
+	local user_name checkout_time
+	if [ -z "$1" ]; then
+		print_help
+		exit 1
+	fi
+
+	case "$1" in
+		--help|-h)
+			print_help
+			exit 0
+			;;
+		*)
+			;;
+	esac
+
+	user_name="$1"
+	shift
+	checkout_time=$*
+
+	source "$ONESSH_LIB/reserve.sh"
+
+	if [ -n "$checkout_time" ]; then
+		local scheduled_at scheduled_id scheduled_time
+		scheduled_at="$(atq -qz | grep -e "^$USER")"
+		if [ -n "$scheduled_at" ]; then
+			scheduled_id="$(echo "$scheduled_at" | awk '{print $1}')"
+			scheduled_time="$(echo "$scheduled_at" | awk '{print $3,$4,$5,$6}')"
+			atrm "$scheduled_id"
+			print_warning "Cancelled previous check-out scheduled" \
+				"at $scheduled_time"
+		fi
+		cat <<-EOF | at -qz $checkout_time
+		#!/bin/bash
+		source "$ONESSH_LIB/reserve.sh"
+		check_out "$user_name" &> "$HOME/.onessh-checkout.log"
+		EOF
+	else
+		if check_out "$user_name"; then
+			echo "Checked out for user [$user_name]"
+		else
+			print_error "Failed to check out for user [$user_name]"
+			exit 1
+		fi
+	fi
+}
+
+main "$@"

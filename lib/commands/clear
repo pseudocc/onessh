@@ -1,0 +1,9 @@
+#!/bin/bash
+# vim: noet
+
+if [ "$1" = "--short-help" ]; then
+	echo "Clear the screen"
+	exit 0
+fi
+
+tput clear || exit 1
