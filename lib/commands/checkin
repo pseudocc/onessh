@@ -69,3 +69,5 @@ main() {
 		print_info "This device will be checked out at $scheduled_time"
 	fi
 }
+
+main "$@"
