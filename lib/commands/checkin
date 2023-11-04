@@ -13,9 +13,11 @@ fi
 
 # --help/-h
 print_help() {
-	echo "Usage: checkin <user_name> [checkout_time]"
+	echo "Usage: checkin <user_name> [checkout_time] [options]"
 	echo "    Check-in(reserve) this device for <user_name>, and check"
 	echo "    it out at <checkout_time> if specified"
+	echo "Options:"
+	echo "    --help,-h:     Print this help message"
 	echo "Positional arguments:"
 	echo "    user_name:     The user name of your Lanuchpad account"
 	echo "    checkout_time: (optional)"
