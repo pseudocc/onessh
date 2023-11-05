@@ -1,0 +1,27 @@
+Source: onessh
+Section: admin
+Priority: optional
+Maintainer: Atlas Yu <atlas.yu@canonical.com>
+Build-Depends:
+  debhelper (= 12),
+Standards-Version: 4.6.0
+Homepage: https://github.com/pseudocc/onessh
+Vcs-Browser: https://github.com/pseudocc/onessh
+Vcs-Git: https://github.com/psuedocc/onessh.git
+
+Package: onessh
+Architecture: any
+Priority: optional
+Depends: 
+  user-setup,
+  sudo,
+  bash,
+  openssh-server,
+  ssh-import-id,
+  at,
+  ${shlibs:Depends},
+  ${misc:Depends},
+Description:
+  OneSSH is a login shell to manage multiple SSH keys. It is designed to be
+  used by mulitple users who can reserve the device for a period of time, so
+  that their login will not be interrupted by other users.

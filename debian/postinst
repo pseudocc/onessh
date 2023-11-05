@@ -1,0 +1,61 @@
+#!/bin/bash -e
+# vim: noet
+
+# This postinst script will add a user and group for the package if it
+# doesn't already exist.
+
+ONESSH_USER=onessh-chad
+ONESSH_GROUP=onessh
+ONESSH_SHELL=/usr/bin/onessh
+ONESSH_RC=/home/$ONESSH_USER/.onesshrc
+
+_configure() {
+	# Create the group if it doesn't exist
+	if ! getent group $ONESSH_GROUP >/dev/null; then
+		addgroup --system $ONESSH_GROUP >/dev/null
+	fi
+
+	# Create the user if it doesn't exist
+	if ! getent passwd $ONESSH_USER >/dev/null; then
+		adduser \
+			--system \
+			--disabled-login \
+			--ingroup $ONESSH_GROUP
+	fi
+
+	# Append onessh to /etc/shells if it's not already there
+	if ! grep -q $ONESSH_SHELL /etc/shells; then
+		echo $ONESSH_SHELL >> /etc/shells
+	fi
+
+	# Change the shell for the user
+	chsh -s $ONESSH_SHELL $ONESSH_USER > /dev/null
+
+	if [ -z "${ONESSH_ALLOWED_USERS[*]}" ]; then
+		>&2 echo "ONESSH_ALLOWED_USERS is not set"
+		>&2 echo "Please remember to set it in $ONESSH_RC"
+		return 0
+	fi
+
+	if [ ! -f "$ONESSH_RC" ]; then
+		echo "ONESSH_ALLOWED_USERS=${ONESSH_ALLOWED_USERS[*]}" > $ONESSH_RC
+	fi
+	chown $ONESSH_USER:$ONESSH_USER $ONESSH_RC
+	chmod 466 $ONESSH_RC
+
+	for user in "${ONESSH_ALLOWED_USERS[@]}"; do
+		ssh-import-id "lp:$user" -o /etc/ssh/$ONESSH_USER
+	done
+}
+
+case "$1" in
+	configure)
+		_configure
+		;;
+	abort-upgrade|abort-remove|abort-deconfigure)
+		;;
+	*)
+		>&2 echo "postinst called with unknown argument \`$1'" >&2
+		exit 1
+		;;
+esac

@@ -1,0 +1,5 @@
+onessh (0.1.0) jammy; urgency=medium
+
+  * Initial prototype of onessh.
+
+ -- Atlas Yu <atlas.yu@canonical.com>  Mon, 06 Nov 2023 03:09:45 +0800
