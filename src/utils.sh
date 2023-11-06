@@ -49,7 +49,7 @@ print_welcome() {
     echo
 
 	if [ -z "$ONESSH_ALLOWED_USERS" ]; then
-		print_warning "ONESSH_ALLOWED_USERS is not set," \
+		print_warning "\$ONESSH_ALLOWED_USERS is not set," \
 			"please set it in \$HOME/.onesshrc"
 	fi
 }
@@ -71,34 +71,37 @@ print_error() {
     echo -en "$FG_RED$BOLD"
     echo -n "ERROR: "
     echo "$*"
-    echo -e "$RESET"
+    echo -en "$RESET"
 }
 
 print_warning() {
     echo -en "$FG_YELLOW$BOLD"
     echo -n "WARNING: "
     echo "$*"
-    echo -e "$RESET"
+    echo -en "$RESET"
 }
 
 print_debug() {
+	if [ -z "$ONESSH_DEBUG" ]; then
+		return
+	fi
     echo -en "$FG_BLUE$BOLD"
     echo -n "DEBUG: "
     echo "$*"
-    echo -e "$RESET"
+    echo -en "$RESET"
 }
 
 print_info() {
     echo -en "$FG_GREEN$BOLD"
     echo -n "INFO: "
     echo "$*"
-    echo -e "$RESET"
+    echo -en "$RESET"
 }
 
 enter_alt_screen() {
-	tput smcup
+	tput smcup || tput -T xterm-256color smcup
 }
 
 exit_alt_screen() {
-	tput rmcup
+	tput rmcup || tput -T xterm-256color rmcup
 }

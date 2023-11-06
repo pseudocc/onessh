@@ -34,7 +34,6 @@ main() {
 		exit 1
 	fi
 
-	switch "$1"
 	case "$1" in
 		--help|-h)
 			print_help

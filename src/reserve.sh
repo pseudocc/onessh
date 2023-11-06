@@ -12,7 +12,8 @@
 # And by adjusting the permissions of /etc/ssh/onessh_keys, we can make sure
 # only the user who has checked-in the device can access the device.
 
-export ONESSH_KEY_DIR=/etc/ssh/onessh_keys
+ONESSH_KEY_DIR=/etc/ssh/onessh_keys
+ONESSH_GROUP=onessh
 source "$ONESSH_LIB/utils.sh"
 
 # Create an user if it does not exist, the user has no password and can only
@@ -20,16 +21,14 @@ source "$ONESSH_LIB/utils.sh"
 ensure_user() {
 	local user_name ssh_key_file
 	user_name="$1"
-	if id -u "$user_name" >/dev/null 2>&1; then
-		return 0
-	fi
 
-	if [ -z "${ONESSH_ALLOWED_USERS[*]}" ]; then
-		print_error "ONESSH_ALLOWED_USERS is not set"
+	if [ -z "$ONESSH_ALLOWED_USERS" ]; then
+		print_error "\$ONESSH_ALLOWED_USERS is not set"
 		exit 1
 	fi
 
-	for allowed_user in "${ONESSH_ALLOWED_USERS[@]}"; do
+	ONESSH_ALLOWED_USERS_ARR=($ONESSH_ALLOWED_USERS)
+	for allowed_user in "${ONESSH_ALLOWED_USERS_ARR[@]}"; do
 		if [ "$user_name" = "$allowed_user" ]; then
 			break
 		fi
@@ -39,22 +38,24 @@ ensure_user() {
 		exit 1
 	fi
 
-	if ! sudo useradd -m -s /bin/bash "$user_name"; then
-		print_error "Failed to create user [$user_name]"
-		exit 1
-	fi
-	if ! sudo passwd -d "$user_name"; then
-		print_error "Failed to remove password of user [$user_name]"
-		exit 1
+	if ! id -u "$user_name" >/dev/null 2>&1; then
+		if ! sudo useradd -m -s /bin/bash -G "$ONESSH_GROUP" "$user_name"; then
+			print_error "Failed to create user [$user_name]"
+			exit 1
+		fi
+		if ! sudo passwd -d "$user_name" &> /dev/null; then
+			print_error "Failed to remove password of user [$user_name]"
+			exit 1
+		fi
 	fi
 
 	ssh_key_file="$(onessh_key_file "$user_name")"
-	if ! ssh-import-id lp:"$user_name" -o "$ssh_key_file"; then
+	if ! sudo ssh-import-id lp:"$user_name" -o "$ssh_key_file"; then
 		print_error "Failed to import ssh key of user" \
 			"[$user_name] from Launchpad"
 		exit 1
 	fi
-	sudo chown "$user_name:$user_name" "$ssh_key_file"
+	sudo chown "$user_name:$ONESSH_GROUP" "$ssh_key_file"
 	sudo chmod 0 "$ssh_key_file"
 }
 

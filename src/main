@@ -25,6 +25,10 @@ print_help() {
 }
 
 main() {
+	print_debug "ONESSH_LIB=$ONESSH_LIB"
+	print_debug "ONESSH_ALLOWED_USERS=$ONESSH_ALLOWED_USERS"
+	print_debug "USER=$USER"
+
 	local line command args
 	while print_prompt && IFS=" " read -ra line; do
 		if [ "${#line[@]}" -eq 0 ]; then
@@ -33,10 +37,7 @@ main() {
 
 		command="${line[0]}"
 		args="${line[*]:1}"
-		if [ -n "$ONESSH_DEBUG" ]; then
-			print_debug "command=$command args=$args"
-			sleep 1
-		fi
+		print_debug "command=$command args=\"$args\""
 
 		if has_command "$command"; then
 			# shellcheck disable=SC2086

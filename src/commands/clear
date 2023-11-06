@@ -6,4 +6,4 @@ if [ "$1" = "--short-help" ]; then
 	exit 0
 fi
 
-tput clear || exit 1
+tput clear || tput -T xterm-256color clear
