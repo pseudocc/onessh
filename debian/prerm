@@ -5,30 +5,44 @@
 # But it will not remove the user's home directory.
 
 ONESSH_USER=onessh-chad
-ONESSH_HOME=/home/$ONESSH_USER
 ONESSH_GROUP=onessh
+ONESSH_SHELL=/usr/bin/onessh
 ONESSH_KEY_DIR=/etc/ssh/onessh_keys
 
+_warn_home() {
+	local home=$1
+	echo "The home directory \"$home\" is kept, " \
+		"please remove it manually if you think it's no longer needed."
+}
+
 _remove() {
+	# Remove onessh from /etc/shells
+	if grep -q "$ONESSH_SHELL" /etc/shells; then
+		sed -i "/$ONESSH_SHELL/d" /etc/shells
+	fi
+
 	# Remove the user if it exists
 	if getent passwd $ONESSH_USER >/dev/null; then
-		deluser --system $ONESSH_USER >/dev/null
+		userdel $ONESSH_USER >/dev/null
 	fi
 
 	# Remove the group if it exists
 	if getent group $ONESSH_GROUP >/dev/null; then
-		delgroup --system $ONESSH_GROUP >/dev/null
+		groupdel $ONESSH_GROUP >/dev/null
 	fi
 
 	echo "Removed user \"$ONESSH_USER\" and group \"$ONESSH_GROUP\"."
-	echo "The home directory \"$ONESSH_HOME\" is kept, " \
-		"please remove it manually if you think it's no longer needed."
+	_warn_home "/home/$ONESSH_USER"
 
 	shopt -s nullglob
-	for user in "$ONESSH_KEY_DIR"/*; do
-		if [ -d "$user" ]; then
+	local user
+	for key in "$ONESSH_KEY_DIR"/*; do
+		user=$(basename "$key")
+		if [ -f "$user" ]; then
 			echo "Removing \"$user\"'s SSH keys"
-			sudo rm -rf "$user"
+			rm -f "$key"
+			userdel "$user"
+			_warn_home "/home/$user"
 		fi
 	done
 }
