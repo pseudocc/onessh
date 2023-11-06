@@ -5,7 +5,9 @@
 # But it will not remove the user's home directory.
 
 ONESSH_USER=onessh-chad
+ONESSH_HOME=/home/$ONESSH_USER
 ONESSH_GROUP=onessh
+ONESSH_KEY_DIR=/etc/ssh/onessh_keys
 
 _remove() {
 	# Remove the user if it exists
@@ -18,9 +20,17 @@ _remove() {
 		delgroup --system $ONESSH_GROUP >/dev/null
 	fi
 
-	echo "Removed user $ONESSH_USER and group $ONESSH_GROUP"
-	echo "The home directory \"$ONESSH_HOME\" is kept, \
-		please remove it manually if you think it's no longer needed."
+	echo "Removed user \"$ONESSH_USER\" and group \"$ONESSH_GROUP\"."
+	echo "The home directory \"$ONESSH_HOME\" is kept, " \
+		"please remove it manually if you think it's no longer needed."
+
+	shopt -s nullglob
+	for user in "$ONESSH_KEY_DIR"/*; do
+		if [ -d "$user" ]; then
+			echo "Removing \"$user\"'s SSH keys"
+			sudo rm -rf "$user"
+		fi
+	done
 }
 
 case "$1" in

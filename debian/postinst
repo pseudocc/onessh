@@ -7,45 +7,65 @@
 ONESSH_USER=onessh-chad
 ONESSH_GROUP=onessh
 ONESSH_SHELL=/usr/bin/onessh
-ONESSH_RC=/home/$ONESSH_USER/.onesshrc
+ONESSH_HOME=/home/$ONESSH_USER
+ONESSH_RC=$ONESSH_HOME/.onesshrc
+ONESSH_CHAD_KEYFILE=$ONESSH_HOME/.ssh/authorized_keys
 
 _configure() {
-	# Create the group if it doesn't exist
-	if ! getent group $ONESSH_GROUP >/dev/null; then
-		addgroup --system $ONESSH_GROUP >/dev/null
-	fi
-
-	# Create the user if it doesn't exist
-	if ! getent passwd $ONESSH_USER >/dev/null; then
-		adduser \
-			--system \
-			--disabled-login \
-			--ingroup $ONESSH_GROUP
-	fi
-
 	# Append onessh to /etc/shells if it's not already there
 	if ! grep -q $ONESSH_SHELL /etc/shells; then
 		echo $ONESSH_SHELL >> /etc/shells
 	fi
 
-	# Change the shell for the user
-	chsh -s $ONESSH_SHELL $ONESSH_USER > /dev/null
+	# Create the group if it doesn't exist
+	if ! getent group $ONESSH_GROUP >/dev/null; then
+		groupadd --system $ONESSH_GROUP
+	fi
+
+	# Create the user if it doesn't exist
+	if ! getent passwd $ONESSH_USER >/dev/null; then
+		useradd --system \
+			--gid $ONESSH_GROUP \
+			--home $ONESSH_HOME \
+			--shell $ONESSH_SHELL \
+			--comment "OneSSH CHAD" \
+			$ONESSH_USER
+		passwd -d $ONESSH_USER
+		usermod -aG sudo $ONESSH_USER
+	fi
+
+	if [ ! -d $ONESSH_HOME ]; then
+		mkdir $ONESSH_HOME
+		chown $ONESSH_USER:$ONESSH_GROUP $ONESSH_HOME
+	fi
 
 	if [ -z "${ONESSH_ALLOWED_USERS[*]}" ]; then
-		>&2 echo "ONESSH_ALLOWED_USERS is not set"
-		>&2 echo "Please remember to set it in $ONESSH_RC"
+		>&2 echo "\$ONESSH_ALLOWED_USERS is not set," \
+			"no users will be allowed to use OneSSH."
+		>&2 echo "Please remember to set it in $ONESSH_RC," \
+			"and import SSH keys into \"/etc/ssh/$ONESSH_USER\"."
 		return 0
 	fi
 
 	if [ ! -f "$ONESSH_RC" ]; then
-		echo "ONESSH_ALLOWED_USERS=${ONESSH_ALLOWED_USERS[*]}" > $ONESSH_RC
+		echo "ONESSH_ALLOWED_USERS=\"$ONESSH_ALLOWED_USERS\"" > $ONESSH_RC
+		chmod 466 $ONESSH_RC
 	fi
-	chown $ONESSH_USER:$ONESSH_USER $ONESSH_RC
-	chmod 466 $ONESSH_RC
 
-	for user in "${ONESSH_ALLOWED_USERS[@]}"; do
-		ssh-import-id "lp:$user" -o /etc/ssh/$ONESSH_USER
+	if [ ! -d "$ONESSH_HOME/.ssh" ]; then
+		mkdir "$ONESSH_HOME/.ssh"
+		if [ ! -f "$ONESSH_CHAD_KEYFILE" ]; then
+			touch "$ONESSH_CHAD_KEYFILE"
+		fi
+	fi
+
+	ONESSH_ALLOWED_USERS_ARR=(${ONESSH_ALLOWED_USERS})
+	for user in "${ONESSH_ALLOWED_USERS_ARR[@]}"; do
+		ssh-import-id "lp:$user" -o "$ONESSH_CHAD_KEYFILE"
 	done
+
+	chown -R $ONESSH_USER:$ONESSH_GROUP $ONESSH_HOME
+	systemctl restart ssh.service
 }
 
 case "$1" in
