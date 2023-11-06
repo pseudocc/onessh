@@ -51,19 +51,28 @@ main() {
 
 	if [ -n "$checkout_time" ]; then
 		local scheduled_at scheduled_id scheduled_time
-		scheduled_at="$(atq -qz | grep -e "^$USER")"
+		if ! has_checked_in "$user_name"; then
+			print_error "User [$user_name] has not checked-in"
+			exit 1
+		fi
+
+		scheduled_at="$(atq -qz)"
 		if [ -n "$scheduled_at" ]; then
 			scheduled_id="$(echo "$scheduled_at" | awk '{print $1}')"
 			scheduled_time="$(echo "$scheduled_at" | awk '{print $3,$4,$5,$6}')"
 			atrm "$scheduled_id"
-			print_warning "Cancelled previous check-out scheduled" \
+			print_warning "Cancelled previous scheduled checkout" \
 				"at $scheduled_time"
 		fi
-		cat <<-EOF | at -qz $checkout_time
+
+		cat <<-EOF | at -qz $checkout_time &> /dev/null
 		#!/bin/bash
 		source "$ONESSH_LIB/reserve.sh"
 		check_out "$user_name" &> "$HOME/.onessh-checkout.log"
 		EOF
+
+		scheduled_time="$(atq -qz | awk '{print $3,$4,$5,$6}')"
+		print_info "This device will be checked out at $scheduled_time"
 	else
 		if check_out "$user_name"; then
 			echo "Checked out for user [$user_name]"

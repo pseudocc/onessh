@@ -61,12 +61,13 @@ main() {
 
 	if [ -n "$checkout_time" ]; then
 		local scheduled_time
-		cat <<-EOF | at -qz $checkout_time
+		cat <<-EOF | at -qz $checkout_time &> /dev/null
 		#!/bin/bash
 		source "$ONESSH_LIB/reserve.sh"
 		check_out "$user_name" &> "$HOME/.onessh-checkout.log"
 		EOF
-		scheduled_time="$(atq -qz | grep -e "^$USER" | awk '{print $3,$4,$5,$6}')"
+
+		scheduled_time="$(atq -qz | awk '{print $3,$4,$5,$6}')"
 		print_info "This device will be checked out at $scheduled_time"
 	fi
 }

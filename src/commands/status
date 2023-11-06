@@ -23,8 +23,7 @@ main() {
 
 		user_name="$(basename "$key_file")"
 		echo -n "User [$user_name] has checked-in, "
-		scheduled_checkout="$(atq -qz | grep -e "^$USER" | \
-			awk '{print $3,$4,$5,$6}')"
+		scheduled_checkout="$(atq -qz | awk '{print $3,$4,$5,$6}')"
 
 		if [ -n "$scheduled_checkout" ]; then
 			echo "the scheduled checkout time is $scheduled_checkout."
