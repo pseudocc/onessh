@@ -15,7 +15,7 @@ ONESSH_ALLOWED_USERS="lpuser1 lpuser2" sudo -E dpkg -i onessh_amd64.deb
 
 ## Usage
 
-Users in `ONESSH_ALLOWED_USERS` is able to run the following command to enter the
+Users in `ONESSH_ALLOWED_USERS` are able to run the following command to enter the
 OneSSH login shell.
 
 ```
@@ -34,6 +34,6 @@ Then lpuser1 would be able to SSH into the device.
 ssh lpuser1@host
 ```
 
-Run `checkout` to release immediately or after a certain amount of time.
+Run `checkout` to release immediately or at certain time.
 
-Run `status` to check the checked-in state.
+Run `status` to check the checked-in state and the scheduled checkout time.
