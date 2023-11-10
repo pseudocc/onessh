@@ -24,29 +24,29 @@ RESET="\033[0m"
 PS1="$BG_MAGENTA$FG_BLACK$BOLD ONE $BG_RESET$FG_MAGENTA$RESET "
 
 print_welcome() {
-    # print a colorful logo
-    # ╭─────────────────────────────────────╮
-    # │                              _      │
-    # │   ___  ____   ____  ___  ___| | _   │
-    # │  / _ \|  _ \ / _  )/___)/___) || \  │
-    # │ | |_| | | | ( (/ /|___ |___ | | | | │
-    # │  \___/|_| |_|\____|___/(___/|_| |_| │
-    # │                                     │
-    # ╰─────────────────────────────────────╯
-    local fg_border="$FG_RED"
-    local fg_one="$FG_YELLOW"
-    local fg_ssh="$FG_GREEN"
-    echo -e "$BOLD${fg_border}╭────────────$FG_RESET WELCOME TO ${fg_border}─────────────╮"
-    echo -e "│                              ${fg_ssh}_     ${fg_border} │"
-    echo -e "│   ${fg_one}___  ____   ____  ${fg_ssh}___  ___| | _  ${fg_border} │"
-    echo -e "│  ${fg_one}/ _ \|  _ \ / _  )${fg_ssh}/___)/___) || \ ${fg_border} │"
-    echo -e "│ ${fg_one}| |_| | | | ( (/ /${fg_ssh}|___ |___ | | | |${fg_border} │"
-    echo -e "│  ${fg_one}\___/|_| |_|\____${fg_ssh}|___/(___/|_| |_|${fg_border} │"
-    echo -e "│                                    ${fg_border} │"
-    echo -e "╰─────────────────────────────────────╯$RESET"
-    echo -en "Type ${FG_YELLOW}help${FG_RESET} to see available commands, "
-    echo -e "${FG_YELLOW}exit${FG_RESET} to exit the shell."
-    echo
+	# print a colorful logo
+	# ╭─────────────────────────────────────╮
+	# │                              _      │
+	# │   ___  ____   ____  ___  ___| | _   │
+	# │  / _ \|  _ \ / _  )/___)/___) || \  │
+	# │ | |_| | | | ( (/ /|___ |___ | | | | │
+	# │  \___/|_| |_|\____|___/(___/|_| |_| │
+	# │                                     │
+	# ╰─────────────────────────────────────╯
+	local fg_border="$FG_RED"
+	local fg_one="$FG_YELLOW"
+	local fg_ssh="$FG_GREEN"
+	echo -e "$BOLD${fg_border}╭────────────$FG_RESET WELCOME TO ${fg_border}─────────────╮"
+	echo -e "│                              ${fg_ssh}_     ${fg_border} │"
+	echo -e "│   ${fg_one}___  ____   ____  ${fg_ssh}___  ___| | _  ${fg_border} │"
+	echo -e "│  ${fg_one}/ _ \|  _ \ / _  )${fg_ssh}/___)/___) || \ ${fg_border} │"
+	echo -e "│ ${fg_one}| |_| | | | ( (/ /${fg_ssh}|___ |___ | | | |${fg_border} │"
+	echo -e "│  ${fg_one}\___/|_| |_|\____${fg_ssh}|___/(___/|_| |_|${fg_border} │"
+	echo -e "│                                    ${fg_border} │"
+	echo -e "╰─────────────────────────────────────╯$RESET"
+	echo -en "Type ${FG_YELLOW}help${FG_RESET} to see available commands, "
+	echo -e "${FG_YELLOW}exit${FG_RESET} to exit the shell."
+	echo
 
 	if [ -z "$ONESSH_ALLOWED_USERS" ]; then
 		print_warning "\$ONESSH_ALLOWED_USERS is not set," \
@@ -68,34 +68,34 @@ print_prompt() {
 }
 
 print_error() {
-    echo -en "$FG_RED$BOLD"
-    echo -n "ERROR: "
-    echo "$*"
-    echo -en "$RESET"
+	echo -en "$FG_RED$BOLD"
+	echo -n "ERROR: "
+	echo "$*"
+	echo -en "$RESET"
 }
 
 print_warning() {
-    echo -en "$FG_YELLOW$BOLD"
-    echo -n "WARNING: "
-    echo "$*"
-    echo -en "$RESET"
+	echo -en "$FG_YELLOW$BOLD"
+	echo -n "WARNING: "
+	echo "$*"
+	echo -en "$RESET"
 }
 
 print_debug() {
 	if [ -z "$ONESSH_DEBUG" ]; then
 		return
 	fi
-    echo -en "$FG_BLUE$BOLD"
-    echo -n "DEBUG: "
-    echo "$*"
-    echo -en "$RESET"
+	echo -en "$FG_BLUE$BOLD"
+	echo -n "DEBUG: "
+	echo "$*"
+	echo -en "$RESET"
 }
 
 print_info() {
-    echo -en "$FG_GREEN$BOLD"
-    echo -n "INFO: "
-    echo "$*"
-    echo -en "$RESET"
+	echo -en "$FG_GREEN$BOLD"
+	echo -n "INFO: "
+	echo "$*"
+	echo -en "$RESET"
 }
 
 enter_alt_screen() {
