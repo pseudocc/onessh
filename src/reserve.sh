@@ -114,3 +114,15 @@ check_out() {
 	fi
 	sudo chmod 0 "$ssh_key_file"
 }
+
+shared_keys() {
+	local user_name
+	for file in "$ONESSH_KEY_DIR"/*; do
+		if has_checked_in "$file"; then
+			user_name="$(basename "$file")"
+		    sudo -u "$user_name" cat "$file"
+			return 0
+		fi
+	done
+	return 1
+}

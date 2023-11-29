@@ -6,6 +6,7 @@
 
 ONESSH_USER=onessh-chad
 ONESSH_GROUP=onessh
+ONESSH_SHARED_GROUP=onessh-shared
 ONESSH_SHELL=/usr/bin/onessh
 ONESSH_KEY_DIR=/etc/ssh/onessh_keys
 
@@ -26,12 +27,16 @@ _remove() {
 		userdel $ONESSH_USER >/dev/null
 	fi
 
-	# Remove the group if it exists
+	# Remove the groups if they exist
 	if getent group $ONESSH_GROUP >/dev/null; then
 		groupdel $ONESSH_GROUP >/dev/null
 	fi
+	if getent group $ONESSH_SHARED_GROUP >/dev/null; then
+		groupdel $ONESSH_SHARED_GROUP >/dev/null
+	fi
 
-	echo "Removed user \"$ONESSH_USER\" and group \"$ONESSH_GROUP\"."
+	echo "Removed user \"$ONESSH_USER\", groups" \
+		"\"$ONESSH_GROUP\" and \"$ONESSH_SHARED_GROUP\""
 	_warn_home "/home/$ONESSH_USER"
 
 	shopt -s nullglob

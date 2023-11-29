@@ -6,6 +6,7 @@
 
 ONESSH_USER=onessh-chad
 ONESSH_GROUP=onessh
+ONESSH_SHARED_GROUP=onessh-shared
 ONESSH_SHELL=/usr/bin/onessh
 ONESSH_HOME=/home/$ONESSH_USER
 ONESSH_RC=$ONESSH_HOME/.onesshrc
@@ -17,9 +18,12 @@ _configure() {
 		echo $ONESSH_SHELL >> /etc/shells
 	fi
 
-	# Create the group if it doesn't exist
+	# Create the groups if they don't exist
 	if ! getent group $ONESSH_GROUP >/dev/null; then
 		groupadd --system $ONESSH_GROUP
+	fi
+	if ! getent group $ONESSH_SHARED_GROUP >/dev/null; then
+		groupadd --system $ONESSH_SHARED_GROUP
 	fi
 
 	# Create the user if it doesn't exist
@@ -38,6 +42,24 @@ _configure() {
 		mkdir $ONESSH_HOME
 		chown $ONESSH_USER:$ONESSH_GROUP $ONESSH_HOME
 	fi
+
+	if [ -z "$ONESSH_SHARED_USERS" ]; then
+		local current_user=${SUDO_USER:-$USER}
+		>&2 echo "\$ONESSH_SHARED_USERS is not set," \
+			"use \"$current_user\" as the only shared user."
+		ONESSH_SHARED_USERS=$current_user
+	fi
+	
+	# shellcheck disable=SC2206
+	ONESSH_SHARED_USERS_ARR=(${ONESSH_SHARED_USERS})
+	for user in "${ONESSH_SHARED_USERS_ARR[@]}"; do
+		if ! getent passwd "$user" >/dev/null; then
+			>&2 echo "User \"$user\" does not exist, skipping."
+			continue
+		fi
+		usermod -aG $ONESSH_SHARED_GROUP "$user"
+		echo "User \"$user\" is added to \"$ONESSH_SHARED_GROUP\" group."
+	done
 
 	if [ -z "$ONESSH_ALLOWED_USERS" ]; then
 		>&2 echo "\$ONESSH_ALLOWED_USERS is not set," \

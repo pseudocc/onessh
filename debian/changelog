@@ -1,3 +1,9 @@
+onessh (0.2.0) jammy; urgency=medium
+
+  * Add support for shared user(s).
+
+ -- Atlas Yu <atlas.yu@canonical.com>  Thu, 30 Nov 2023 01:39:21 +0800
+
 onessh (0.1.0) jammy; urgency=medium
 
   * Initial prototype of onessh.
