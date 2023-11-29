@@ -39,7 +39,7 @@ _configure() {
 		chown $ONESSH_USER:$ONESSH_GROUP $ONESSH_HOME
 	fi
 
-	if [ -z "${ONESSH_ALLOWED_USERS[*]}" ]; then
+	if [ -z "$ONESSH_ALLOWED_USERS" ]; then
 		>&2 echo "\$ONESSH_ALLOWED_USERS is not set," \
 			"no users will be allowed to use OneSSH."
 		>&2 echo "Please remember to set it in $ONESSH_RC," \
@@ -59,6 +59,7 @@ _configure() {
 		fi
 	fi
 
+	# shellcheck disable=SC2206
 	ONESSH_ALLOWED_USERS_ARR=(${ONESSH_ALLOWED_USERS})
 	for user in "${ONESSH_ALLOWED_USERS_ARR[@]}"; do
 		ssh-import-id "lp:$user" -o "$ONESSH_CHAD_KEYFILE"

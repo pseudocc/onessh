@@ -27,6 +27,7 @@ ensure_user() {
 		exit 1
 	fi
 
+	# shellcheck disable=SC2206
 	ONESSH_ALLOWED_USERS_ARR=($ONESSH_ALLOWED_USERS)
 	for allowed_user in "${ONESSH_ALLOWED_USERS_ARR[@]}"; do
 		if [ "$user_name" = "$allowed_user" ]; then
