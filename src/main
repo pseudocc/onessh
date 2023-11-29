@@ -25,9 +25,10 @@ print_help() {
 }
 
 main() {
-	print_debug "ONESSH_LIB=$ONESSH_LIB"
-	print_debug "ONESSH_ALLOWED_USERS=$ONESSH_ALLOWED_USERS"
-	print_debug "USER=$USER"
+	if [ -n "$ONESSH_DEBUG" ]; then
+		print_debug "Debug mode is enabled"
+		print_env "ONESSH_LIB" "ONESSH_ALLOWED_USERS" "USER"
+	fi
 
 	local line command args
 	while print_prompt && IFS=" " read -ra line; do

@@ -91,6 +91,18 @@ print_debug() {
 	echo -en "$RESET"
 }
 
+print_env_var() {
+	echo -en "$FG_MAGENTA$BOLD"
+	echo -e "ENV: $FG_YELLOW$1$FG_RESET=$FG_YELLOW\"${!1}\""
+	echo -en "$RESET"
+}
+
+print_env() {
+	for var in "$@"; do
+		print_env_var "$var"
+	done
+}
+
 print_info() {
 	echo -en "$FG_GREEN$BOLD"
 	echo -n "INFO: "
