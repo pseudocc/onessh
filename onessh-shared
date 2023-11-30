@@ -1,3 +1,0 @@
-#!/bin/sh -a
-ONESSH_LIB=/usr/lib/onessh
-$ONESSH_LIB/shared

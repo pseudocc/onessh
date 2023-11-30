@@ -1,4 +1,3 @@
 src/* /usr/lib/onessh
 onessh /usr/bin
-onessh-shared /usr/bin
 etc

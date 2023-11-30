@@ -1,9 +1,0 @@
-#!/bin/bash
-# vim: noet
-
-if [ -z "$ONESSH_LIB" ]; then 
-	ONESSH_LIB="$(dirname "$0")"
-fi
-
-source "$ONESSH_LIB/reserve.sh"
-shared_keys

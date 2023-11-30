@@ -59,6 +59,11 @@ main() {
 }
 
 if [ -n "$*" ]; then
+	if [ "$1" = "shared_keys" ]; then
+		shared_keys
+		exit $?
+	fi
+
 	run_command "$@"
 	exit $?
 elif [ -t 0 ]; then
