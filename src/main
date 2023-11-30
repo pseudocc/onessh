@@ -24,6 +24,24 @@ print_help() {
 		"exit" "Exit this shell"
 }
 
+run_command() {
+	local line=("$@")
+	local command="${line[0]}"
+	local args="${line[*]:1}"
+	print_debug "command=$command args=\"$args\""
+
+	if has_command "$command"; then
+		# shellcheck disable=SC2086
+		"$ONESSH_LIB/commands/$command" $args 
+	elif [ "$command" = "exit" ]; then
+		exit "${args:-0}"
+	elif [ "$command" = "help" ]; then
+		print_help
+	else
+		print_error "Command not found: $command"
+	fi
+}
+
 main() {
 	if [ -n "$ONESSH_DEBUG" ]; then
 		print_debug "Debug mode is enabled"
@@ -36,24 +54,17 @@ main() {
 			continue
 		fi
 
-		command="${line[0]}"
-		args="${line[*]:1}"
-		print_debug "command=$command args=\"$args\""
-
-		if has_command "$command"; then
-			# shellcheck disable=SC2086
-			"$ONESSH_LIB/commands/$command" $args 
-		elif [ "$command" = "exit" ]; then
-			exit "${args:-0}"
-		elif [ "$command" = "help" ]; then
-			print_help
-		else
-			echo "Command not found: $command"
-		fi
+		run_command "${line[@]}"
 	done
 }
 
-trap exit_alt_screen EXIT
-enter_alt_screen
-print_welcome
-main
+if [ -n "$*" ]; then
+	run_command "$@"
+	exit $?
+elif [ -t 0 ]; then
+	trap exit_alt_screen EXIT
+	enter_alt_screen
+	print_welcome
+	main
+	exit $?
+fi

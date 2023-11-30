@@ -56,7 +56,9 @@ print_welcome() {
 
 has_command() {
 	local command="$1"
-	if [ -x "$ONESSH_LIB/commands/$command" ]; then
+	if [ -z "$command" ]; then
+		return 1
+	elif [ -x "$ONESSH_LIB/commands/$command" ]; then
 		return 0
 	else
 		return 1
