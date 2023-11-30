@@ -19,7 +19,7 @@ source "$ONESSH_LIB/utils.sh"
 # Create an user if it does not exist, the user has no password and can only
 # access the device by ssh key.
 ensure_user() {
-	local user_name ssh_key_file
+	local user_name ssh_key_file key_exists
 	user_name="$1"
 
 	if [ -z "$ONESSH_ALLOWED_USERS" ]; then
@@ -39,7 +39,7 @@ ensure_user() {
 		exit 1
 	fi
 
-	if ! id -u "$user_name" >/dev/null 2>&1; then
+	if ! id -u "$user_name" &> /dev/null; then
 		if ! sudo useradd -m -s /bin/bash -G "$ONESSH_GROUP" "$user_name"; then
 			print_error "Failed to create user [$user_name]"
 			exit 1
@@ -51,13 +51,20 @@ ensure_user() {
 	fi
 
 	ssh_key_file="$(onessh_key_file "$user_name")"
+	if [ -f "$ssh_key_file" ]; then
+		key_exists=1
+	fi
+
 	if ! sudo ssh-import-id lp:"$user_name" -o "$ssh_key_file" &> /dev/null; then
 		print_error "Failed to import ssh key of user" \
 			"[$user_name] from Launchpad"
 		exit 1
 	fi
-	sudo chown "$user_name:$ONESSH_GROUP" "$ssh_key_file"
-	sudo chmod 0 "$ssh_key_file"
+
+	if [ -z "$key_exists" ]; then
+		sudo chown "$user_name:$ONESSH_GROUP" "$ssh_key_file"
+		sudo chmod 0 "$ssh_key_file"
+	fi
 }
 
 onessh_key_file() {
@@ -101,7 +108,7 @@ check_in() {
 check_out() {
 	local user_name ssh_key_file
 	user_name="$1"
-	if ! id -u "$user_name" >/dev/null 2>&1; then
+	if ! id -u "$user_name" &> /dev/null; then
 		print_error "User [$user_name] does not exist"
 		sudo rm -f "$(onessh_key_file "$user_name")"
 		exit 1
