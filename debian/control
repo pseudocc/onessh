@@ -10,7 +10,7 @@ Vcs-Browser: https://github.com/pseudocc/onessh
 Vcs-Git: https://github.com/psuedocc/onessh.git
 
 Package: onessh
-Architecture: any
+Architecture: all
 Priority: optional
 Depends: 
  sudo,
