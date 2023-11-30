@@ -73,7 +73,7 @@ onessh_key_file() {
 }
 
 has_checked_in() {
-	ssh_key_file="$1"
+	local ssh_key_file="$1"
 	if [ "$(stat -c "%a" "$ssh_key_file")" = "400" ]; then
 		return 0
 	else
