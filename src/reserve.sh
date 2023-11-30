@@ -51,7 +51,7 @@ ensure_user() {
 	fi
 
 	ssh_key_file="$(onessh_key_file "$user_name")"
-	if ! sudo ssh-import-id lp:"$user_name" -o "$ssh_key_file"; then
+	if ! sudo ssh-import-id lp:"$user_name" -o "$ssh_key_file" &> /dev/null; then
 		print_error "Failed to import ssh key of user" \
 			"[$user_name] from Launchpad"
 		exit 1
