@@ -133,3 +133,7 @@ shared_keys() {
 	done
 	return 1
 }
+
+if [ -n "$ONESSH_VERBOSE" ]; then
+	set -x
+fi
