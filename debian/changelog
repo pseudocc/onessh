@@ -1,10 +1,16 @@
-onessh (0.2.0) jammy; urgency=medium
+onessh (0.3.0) stable; urgency=medium
+
+  * Add a banner to inform users that the device is managed by OneSSH.
+
+ -- Atlas Yu <atlas.yu@canonical.com>  Fri, 01 Dec 2023 12:54:44 +0800
+
+onessh (0.2.0) stable; urgency=medium
 
   * Add support for shared user(s).
 
  -- Atlas Yu <atlas.yu@canonical.com>  Thu, 30 Nov 2023 01:39:21 +0800
 
-onessh (0.1.0) jammy; urgency=medium
+onessh (0.1.0) stable; urgency=medium
 
   * Initial prototype of onessh.
 

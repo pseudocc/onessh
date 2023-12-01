@@ -1,0 +1,5 @@
+It seems like you're trying to access a OneSSH managed device. Here are the steps you should follow:
+  1. Use the command ssh onessh-chad@host in your terminal to manage the reservations.
+  2. Ensure that you have checked-in before trying to SSH into the device.
+Please note that if you haven't checked-in, your login attempts will be rejected.
+
