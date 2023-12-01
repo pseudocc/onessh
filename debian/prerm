@@ -19,7 +19,7 @@ _warn_home() {
 _remove() {
 	# Remove onessh from /etc/shells
 	if grep -q "$ONESSH_SHELL" /etc/shells; then
-		sed -i "/$ONESSH_SHELL/d" /etc/shells
+		sed -i "\:$ONESSH_SHELL:d" /etc/shells
 	fi
 
 	# Remove the user if it exists
