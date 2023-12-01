@@ -12,7 +12,7 @@
 # And by adjusting the permissions of /etc/ssh/onessh_keys, we can make sure
 # only the user who has checked-in the device can access the device.
 
-ONESSH_KEY_DIR=/etc/ssh/onessh_keys
+ONESSH_KEY_DIR=/etc/ssh/onessh/keys
 ONESSH_GROUP=onessh
 source "$ONESSH_LIB/utils.sh"
 
