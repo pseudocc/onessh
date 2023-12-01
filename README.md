@@ -7,8 +7,8 @@ check-in the device first.
 ## Installation & Configuration
 
 You can specify the environment variable `ONESSH_ALLOWED_USERS` for a quick
-setup. Otherwise, you need to add this in `/home/onessh-chad/.onesshrc` and
-import SSH keys into `/home/onessh-chad/.ssh/authorized_keys` manually.
+setup. Otherwise, you need to add this in `/home/onechad/.onesshrc` and
+import SSH keys into `/home/onechad/.ssh/authorized_keys` manually.
 
 ```bash
 sudo ONESSH_ALLOWED_USERS="lpuser1 lpuser2" dpkg -i onessh_amd64.deb
@@ -20,7 +20,7 @@ Users in `ONESSH_ALLOWED_USERS` are able to run the following command to
 enter the OneSSH login shell.
 
 ```bash
-ssh onessh-chad@host
+ssh onechad@host
 ```
 
 Inside the login shell, run `checkin` to reserve the device.
@@ -42,5 +42,5 @@ Run `status` to check the checked-in state and the scheduled checkout time.
 You could also run commands directly without entering the login shell.
 
 ```bash
-ssh onessh-chad@host status
+ssh onechad@host status
 ```

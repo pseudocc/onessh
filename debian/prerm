@@ -4,7 +4,7 @@
 # This prerm script will remove the user and group for the package if it exists.
 # But it will not remove the user's home directory.
 
-ONESSH_USER=onessh-chad
+ONESSH_USER=onechad
 ONESSH_GROUP=onessh
 ONESSH_SHARED_GROUP=onessh-shared
 ONESSH_SHELL=/usr/bin/onessh
