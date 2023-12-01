@@ -60,13 +60,15 @@ main() {
 
 if [ -n "$*" ]; then
 	if [ "$1" = "shared_keys" ]; then
+		unset ONESSH_VERBOSE
+		source "$ONESSH_LIB/reserve.sh"
 		shared_keys
 		exit $?
 	fi
 
 	run_command "$@"
 	exit $?
-elif [ -t 0 ]; then
+else
 	trap exit_alt_screen EXIT
 	enter_alt_screen
 	print_welcome
