@@ -1,3 +1,10 @@
 #!/bin/sh -a
+
+if [ -n "$SSH_CLIENT" ]; then
+    if [ "$1" = "-c" ]; then
+        shift
+    fi
+fi
+
 ONESSH_LIB=/usr/lib/onessh
 $ONESSH_LIB/main "$@"
