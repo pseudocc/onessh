@@ -44,8 +44,18 @@ ensure_user() {
 			print_error "Failed to create user [$user_name]"
 			exit 1
 		fi
+		if ! sudo usermod -aG sudo "$user_name"; then
+			print_error "Failed to add user [$user_name] to group [sudo]"
+			exit 1
+		fi
 		if ! sudo passwd -d "$user_name" &> /dev/null; then
 			print_error "Failed to remove password of user [$user_name]"
+			exit 1
+		fi
+	else
+		if ! sudo usermod -aG "$ONESSH_GROUP" "$user_name"; then
+			print_error "Failed to add user [$user_name] to group" \
+				"[$ONESSH_GROUP]"
 			exit 1
 		fi
 	fi
