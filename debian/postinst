@@ -81,6 +81,11 @@ _configure() {
 		fi
 	fi
 
+	# disable motd for chad user
+	if [ ! -f "$ONESSH_HOME/.hushlogin" ]; then
+		touch "$ONESSH_HOME/.hushlogin"
+	fi
+
 	# shellcheck disable=SC2206
 	ONESSH_ALLOWED_USERS_ARR=(${ONESSH_ALLOWED_USERS})
 	for user in "${ONESSH_ALLOWED_USERS_ARR[@]}"; do
