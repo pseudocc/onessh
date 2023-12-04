@@ -7,4 +7,5 @@ if [ -n "$SSH_CLIENT" ]; then
 fi
 
 ONESSH_LIB=/usr/lib/onessh
-$ONESSH_LIB/main "$@"
+# shellcheck disable=SC2048,SC2086
+$ONESSH_LIB/main $*
