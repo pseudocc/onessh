@@ -1,3 +1,9 @@
+onessh (0.3.2) stable; urgency=medium
+
+  * Fix rescheduling of checkout.
+
+ -- Atlas Yu <atlas.yu@canonical.com>  Mon, 04 Dec 2023 16:27:33 +0800
+
 onessh (0.3.1) stable; urgency=medium
 
   * Fix non-interactive mode.

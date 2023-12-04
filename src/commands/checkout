@@ -51,7 +51,7 @@ main() {
 
 	if [ -n "$checkout_time" ]; then
 		local scheduled_at scheduled_id scheduled_time
-		if ! has_checked_in "$user_name"; then
+		if ! has_checked_in "$(onessh_key_file "$user_name")"; then
 			print_error "User [$user_name] has not checked-in"
 			exit 1
 		fi
