@@ -14,6 +14,9 @@ import SSH keys into `/home/onechad/.ssh/authorized_keys` manually.
 sudo ONESSH_ALLOWED_USERS="lpuser1 lpuser2" dpkg -i onessh_amd64.deb
 ```
 
+if `ONESSH_SHARED_USERS` is not defined, then the current user will be
+considered to be the "shared user".
+
 ## Usage
 
 Users in `ONESSH_ALLOWED_USERS` are able to run the following command to
@@ -35,6 +38,13 @@ Then lpuser1 would be able to SSH into the device.
 ssh lpuser1@host
 ```
 
+Suppose "ubuntu" is included in `ONESSH_SHARED_USERS`, lpuser1 could also
+connect to the host via:
+
+```bash
+ssh ubuntu@host
+```
+
 Run `checkout` to release immediately or at certain time.
 
 Run `status` to check the checked-in state and the scheduled checkout time.
@@ -43,4 +53,20 @@ You could also run commands directly without entering the login shell.
 
 ```bash
 ssh onechad@host status
+```
+
+### Help
+
+List all commands and brief help message for the onessh shell.
+
+```bash
+ssh onechad@host help
+```
+
+For each individual commands, use option `-h/--help` to see the full
+help message.
+
+```bash
+ssh onechad@host status -h
+ssh onechad@host checkin --help
 ```
