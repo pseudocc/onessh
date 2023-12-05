@@ -71,6 +71,8 @@ _configure() {
 
 	if [ ! -f "$ONESSH_RC" ]; then
 		echo "ONESSH_ALLOWED_USERS=\"$ONESSH_ALLOWED_USERS\"" > $ONESSH_RC
+		echo "# ONESSH_DEBUG=1" >> $ONESSH_RC
+		echo "# ONESSH_VERBOSE=1" >> $ONESSH_RC
 		chmod 466 $ONESSH_RC
 	fi
 
