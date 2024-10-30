@@ -1,3 +1,10 @@
+onessh (0.3.3) stable; urgency=medium
+
+  * Add environment variable ONESSH_SHARED_LOGIN to manage shared user login
+    behavior when no user is checked-in.
+
+ -- Atlas Yu <atlas.yu@canonical.com>  Wed, 30 Oct 2024 22:56:30 +0800
+
 onessh (0.3.2) stable; urgency=medium
 
   * Fix rescheduling of checkout.
