@@ -60,10 +60,12 @@ ssh onechad@host status
 You may set `ONESSH_SHARED_LOGIN` during the installation time, or modify it in
 the `.onesshrc` file. It defines how the `OneSSH` would react to the shared
 user login when no user is checked-in.
-    - "all":  all users can login when no user is checked-in
-    - "one":  only the checked-in user
-    - "none": disable shared login when no user is checked-in
+
+- all:  all users can login when no user is checked-in
+- one:  only the checked-in user
+- none: disable shared login when no user is checked-in
               (Please make sure you know what you are doing)
+
 The default behavior is `all`.
 
 ### Help
