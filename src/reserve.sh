@@ -134,7 +134,25 @@ check_out() {
 
 shared_keys() {
 	local user_name
+	case "$ONESSH_SHARED_LOGIN" in
+		none)
+			return 1
+			;;
+		all|one)
+			;;
+		*)
+			print_error "Invalid value [$ONESSH_SHARED_LOGIN] for" \
+				"\$ONESSH_SHARED_LOGIN"
+			exit 1
+			;;
+	esac
+
 	for file in "$ONESSH_KEY_DIR"/*; do
+		if [ "$ONESSH_SHARED_LOGIN" = "all" ]; then
+			sudo cat "$file"
+			continue
+		fi
+		# [ "$ONESSH_SHARED_LOGIN" = "one" ]
 		if has_checked_in "$file"; then
 			user_name="$(basename "$file")"
 			sudo -u "$user_name" cat "$file"

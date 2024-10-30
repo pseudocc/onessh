@@ -69,10 +69,30 @@ _configure() {
 		return 0
 	fi
 
+	if [ -z "$ONESSH_SHARED_LOGIN" ]; then
+		ONESSH_SHARED_LOGIN="all"
+		>&2 echo "\$ONESSH_SHARED_LOGIN is not set," \
+			"all users can login to the shared account when no user is checked-in."
+		>&2 echo "You can set it to \"none\" to disable shared login." \
+			"Or \"one\" to allow only one checked-in user to login."
+	fi
+
 	if [ ! -f "$ONESSH_RC" ]; then
-		echo "ONESSH_ALLOWED_USERS=\"$ONESSH_ALLOWED_USERS\"" > $ONESSH_RC
-		echo "# ONESSH_DEBUG=1" >> $ONESSH_RC
-		echo "# ONESSH_VERBOSE=1" >> $ONESSH_RC
+		cat <<- EOF > $ONESSH_RC
+		# OneSSH configuration
+		# List of users allowed to use OneSSH
+		ONESSH_ALLOWED_USERS=\"$ONESSH_ALLOWED_USERS\"
+		# Who can login to the shared account
+		#  - "all":  all users can login when no user is checked-in
+		#  - "one":  only the checked-in user
+		#  - "none": disable shared login when no user is checked-in
+		#            (Please make sure you know what you are doing)
+		ONESSH_SHARED_LOGIN=\"$ONESSH_SHARED_LOGIN\"
+		# Enable debug print
+		# ONESSH_DEBUG=1
+		# Enable bash option \`set -x\`
+		# ONESSH_VERBOSE=1
+		EOF
 		chmod 466 $ONESSH_RC
 	fi
 
