@@ -137,7 +137,7 @@ shared_keys() {
 	for file in "$ONESSH_KEY_DIR"/*; do
 		if has_checked_in "$file"; then
 			user_name="$(basename "$file")"
-		    sudo -u "$user_name" cat "$file"
+			sudo -u "$user_name" cat "$file"
 			return 0
 		fi
 	done
