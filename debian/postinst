@@ -85,7 +85,7 @@ _configure() {
 		# Who can login to the shared account
 		#  - "all":  all users can login when no user is checked-in
 		#  - "one":  only the checked-in user
-		#  - "none": disable shared login when no user is checked-in
+		#  - "none": disable shared login
 		#            (Please make sure you know what you are doing)
 		ONESSH_SHARED_LOGIN=\"$ONESSH_SHARED_LOGIN\"
 		# Enable debug print
