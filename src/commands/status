@@ -31,7 +31,7 @@ main() {
 			echo "but no scheduled checkout time."
 		fi
 
-		exit 0
+		exit 1
 	done
 
 	echo "No user has checked-in"
