@@ -25,6 +25,14 @@ sudo ONESSH_IMPORT_KEYFILE=/etc/ssh/authorized_keys dpkg -i onessh_amd64.deb
 if `ONESSH_SHARED_USERS` is not defined, then the current user will be
 considered to be the "shared user".
 
+### GOTTA GO FAST
+
+Blazingly fast and simple installation for real programmers.
+
+```bash
+curl -fsSL https://github.com/pseudocc/onessh/releases/download/stable/onesshup.sh | sudo ONESSH_ENV=... bash
+```
+
 ## Usage
 
 Users in `ONESSH_ALLOWED_USERS` are able to run the following command to
