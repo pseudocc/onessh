@@ -1,0 +1,9 @@
+#!/bin/bash
+# vim: noet
+
+if [ "$1" = "--short-help" ]; then
+	echo "Prints the environment variables for OneSSH shell"
+	exit 0
+fi
+
+env | grep --color=never -e "^ONESSH_"
