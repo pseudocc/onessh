@@ -27,6 +27,18 @@ print_help() {
 	echo "        E.g. now + 1 hour, midnight, 2pm tomorrow"
 }
 
+cancel_scheduled() {
+	local scheduled_at scheduled_id scheduled_time
+	scheduled_at="$(atq -qz)"
+	if [ -n "$scheduled_at" ]; then
+		scheduled_id="$(echo "$scheduled_at" | awk '{print $1}')"
+		scheduled_time="$(echo "$scheduled_at" | awk '{print $3,$4,$5,$6}')"
+		atrm "$scheduled_id"
+		print_warning "Cancelled previous scheduled checkout" \
+			"at $scheduled_time"
+	fi
+}
+
 main() {
 	local user_name checkout_time
 	if [ -z "$1" ]; then
@@ -50,20 +62,12 @@ main() {
 	source "$ONESSH_LIB/reserve.sh"
 
 	if [ -n "$checkout_time" ]; then
-		local scheduled_at scheduled_id scheduled_time
 		if ! has_checked_in "$(onessh_key_file "$user_name")"; then
 			print_error "User [$user_name] has not checked-in"
 			exit 1
 		fi
 
-		scheduled_at="$(atq -qz)"
-		if [ -n "$scheduled_at" ]; then
-			scheduled_id="$(echo "$scheduled_at" | awk '{print $1}')"
-			scheduled_time="$(echo "$scheduled_at" | awk '{print $3,$4,$5,$6}')"
-			atrm "$scheduled_id"
-			print_warning "Cancelled previous scheduled checkout" \
-				"at $scheduled_time"
-		fi
+		cancel_scheduled
 
 		cat <<-EOF | at -qz $checkout_time &> /dev/null
 		#!/bin/bash
@@ -76,6 +80,7 @@ main() {
 	else
 		if check_out "$user_name"; then
 			echo "Checked out for user [$user_name]"
+			cancel_scheduled
 		else
 			print_error "Failed to check out for user [$user_name]"
 			exit 1
