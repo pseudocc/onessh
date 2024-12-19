@@ -1,0 +1,36 @@
+#!/bin/bash -e
+# vim: noet
+# DEB_URL=... envsubst '$DEB_URL' < onesshup.sh.template > onesshup.sh
+
+# Make sure we are running as root
+if [ "$(id -u)" != "0" ]; then
+	>&2 echo "This script must be run as root"
+	exit 1
+fi
+
+cleanup() {
+	rm -rf "$WORKDIR"
+
+	if [ -f "$SOURCE_LIST" ]; then
+		rm "$SOURCE_LIST"
+		apt update
+	fi
+}
+
+main() {
+	trap cleanup EXIT
+
+	WORKDIR=$(mktemp -d)
+	SOURCE_LIST="/etc/apt/sources.list.d/onessh.list"
+
+	echo "Downloading OneSSH package from $DEB_URL"
+	curl -sSL "$DEB_URL" -o "$WORKDIR/onessh.deb"
+
+	apt-ftparchive packages "$WORKDIR" > "$WORKDIR/Packages"
+	echo "deb [trusted=yes] file:/. $WORKDIR/" > "$SOURCE_LIST"
+
+	apt update
+	apt install -y onessh
+}
+
+main

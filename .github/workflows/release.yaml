@@ -20,11 +20,17 @@ jobs:
           artifacts-dir: debian/artifacts
           buildpackage-opts: --no-sign -b
       - name: Rename debian package
-        run: sudo cp debian/artifacts/*.deb onessh_${{ github.ref_name }}.deb
-      - name: Create release
+        run: sudo cp debian/artifacts/*.deb onessh.deb
+      - name: generate onesshup.sh
+        run: |
+          DEB_URL="${{ github.server_url }}/${{ github.repository }}/releases/download/${{ github.ref_name }}/onessh.deb" envsubst '$DEB_URL' < onesshup.sh.template > onesshup.sh
+      - name: create release
         uses: softprops/action-gh-release@v1
         with:
-          files: "*.deb"
+          files: |
+            LICENSE
+            onessh.deb
+            onesshup.sh
           tag_name: ${{ github.ref_name }}
           body: |
             Release ${{ github.ref_name }}
