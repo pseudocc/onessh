@@ -3,6 +3,38 @@
 
 # This postinst script will add a user and group for the package if it
 # doesn't already exist.
+#
+# INPUTS:
+# * LIFE TIME:
+#   - configure: during installation or dpkg-reconfigure
+#   - onesshrc: every time the user logs in
+#
+# * TYPES:
+#   - list: space-separated list of items
+#   - user: launchpad user name
+#   - file: file path
+#   - enum: string literal
+#
+# - ONESSH_SHARED_USERS (configure):
+#   (list<user>) All $ONESSH_ALLOWED_USERS will be able to login to
+#   the shared account.
+#   (default: $SUDO_USER or $USER)
+#
+# - ONESSH_ALLOWED_USERS (configure, onesshrc):
+#   (list<user>) Users allowed to use OneSSH, you should set this or
+#   $ONESSH_IMPORT_KEYFILE during the `configure` stage, or set it in
+#   $ONESSH_RC, otherwise no users will be allowed to use OneSSH.
+#
+# - ONESSH_IMPORT_KEYFILE (configure):
+#   (file) Import SSH keys and set $ONESSH_ALLOWED_USERS from this,
+#   instead of importing keys via ssh-import-id for each user.
+#
+# - ONESSH_SHARED_LOGIN (configure, onesshrc):
+#   (enum<"all"|"one"|"none">) Control the shared login behavior.
+#   - "all":  all users can login when no user is checked-in.
+#   - "one":  only the checked-in user.
+#   - "none": disable shared login.
+#   (default: "all")
 
 ONESSH_USER=onechad
 ONESSH_GROUP=onessh
