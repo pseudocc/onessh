@@ -1,3 +1,9 @@
+onessh (0.4.1) unstable; urgency=medium
+
+  * Fix ONESSH_SHARED_LOGIN behavior.
+
+ -- Atlas Yu <atlas.yu@canonical.com>  Thu, 19 Dec 2024 14:20:58 +0800
+
 onessh (0.4.0) unstable; urgency=medium
 
   * Add environment variable ONESSH_IMPORT_KEYFILE in configuration time to

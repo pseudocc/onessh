@@ -14,6 +14,7 @@
 
 ONESSH_KEY_DIR=/etc/ssh/onessh/keys
 ONESSH_GROUP=onessh
+ONESSH_CHAD_KEYFILE=$HOME/.ssh/authorized_keys
 source "$ONESSH_LIB/utils.sh"
 
 # Create an user if it does not exist, the user has no password and can only
@@ -143,22 +144,26 @@ shared_keys() {
 		*)
 			print_error "Invalid value [$ONESSH_SHARED_LOGIN] for" \
 				"\$ONESSH_SHARED_LOGIN"
-			exit 1
+			return 1
 			;;
 	esac
 
 	for file in "$ONESSH_KEY_DIR"/*; do
-		if [ "$ONESSH_SHARED_LOGIN" = "all" ]; then
-			sudo cat "$file"
-			continue
-		fi
-		# [ "$ONESSH_SHARED_LOGIN" = "one" ]
 		if has_checked_in "$file"; then
 			user_name="$(basename "$file")"
 			sudo -u "$user_name" cat "$file"
 			return 0
 		fi
 	done
+
+	if [ "$ONESSH_SHARED_LOGIN" = "all" ]; then
+		cat "$ONESSH_CHAD_KEYFILE"
+		return 0
+	fi
+
+	# No user has checked-in
+	print_error "ONESSH_SHARED_LOGIN is set to [one]," \
+		"but no user has checked-in"
 	return 1
 }
 
