@@ -61,12 +61,19 @@ _configure() {
 		echo "User \"$user\" is added to \"$ONESSH_SHARED_GROUP\" group."
 	done
 
+	if [ -n "$ONESSH_IMPORT_KEYFILE" ]; then
+		>&2 echo "Overwrite \$ONESSH_ALLOWED_USERS with lp users in \"$ONESSH_IMPORT_KEYFILE\"."
+		ONESSH_ALLOWED_USERS=$(grep -oP "# ssh-import-id lp:\K.*$" "$ONESSH_IMPORT_KEYFILE" | uniq)
+		if [ -z "$ONESSH_ALLOWED_USERS" ]; then
+			>&2 echo "No users found in \"$ONESSH_IMPORT_KEYFILE\"."
+		fi
+	fi
+
 	if [ -z "$ONESSH_ALLOWED_USERS" ]; then
 		>&2 echo "\$ONESSH_ALLOWED_USERS is not set," \
 			"no users will be allowed to use OneSSH."
 		>&2 echo "Please remember to set it in $ONESSH_RC," \
 			"and import SSH keys into \"/etc/ssh/$ONESSH_USER\"."
-		return 0
 	fi
 
 	if [ -z "$ONESSH_SHARED_LOGIN" ]; then
@@ -108,11 +115,16 @@ _configure() {
 		touch "$ONESSH_HOME/.hushlogin"
 	fi
 
-	# shellcheck disable=SC2206
-	ONESSH_ALLOWED_USERS_ARR=(${ONESSH_ALLOWED_USERS})
-	for user in "${ONESSH_ALLOWED_USERS_ARR[@]}"; do
-		ssh-import-id "lp:$user" -o "$ONESSH_CHAD_KEYFILE"
-	done
+	if [ -n "$ONESSH_IMPORT_KEYFILE" ]; then
+		>&2 echo "Importing SSH keys from \"$ONESSH_IMPORT_KEYFILE\"."
+		cp "$ONESSH_IMPORT_KEYFILE" "$ONESSH_CHAD_KEYFILE"
+	else
+		# shellcheck disable=SC2206
+		ONESSH_ALLOWED_USERS_ARR=(${ONESSH_ALLOWED_USERS})
+		for user in "${ONESSH_ALLOWED_USERS_ARR[@]}"; do
+			ssh-import-id "lp:$user" -o "$ONESSH_CHAD_KEYFILE"
+		done
+	fi
 
 	chown -R $ONESSH_USER:$ONESSH_GROUP $ONESSH_HOME
 	systemctl restart ssh.service
