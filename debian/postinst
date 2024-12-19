@@ -116,17 +116,20 @@ _configure() {
 			"Or \"one\" to allow only one checked-in user to login."
 	fi
 
+	# shellcheck disable=SC2206
+	ONESSH_ALLOWED_USERS_ARR=(${ONESSH_ALLOWED_USERS})
+
 	if [ ! -f "$ONESSH_RC" ]; then
 		cat <<- EOF > $ONESSH_RC
 		# OneSSH configuration
 		# List of users allowed to use OneSSH
-		ONESSH_ALLOWED_USERS=\"$ONESSH_ALLOWED_USERS\"
+		ONESSH_ALLOWED_USERS="${ONESSH_ALLOWED_USERS_ARR[*]}"
 		# Who can login to the shared account
 		#  - "all":  all users can login when no user is checked-in
 		#  - "one":  only the checked-in user
 		#  - "none": disable shared login
 		#            (Please make sure you know what you are doing)
-		ONESSH_SHARED_LOGIN=\"$ONESSH_SHARED_LOGIN\"
+		ONESSH_SHARED_LOGIN="$ONESSH_SHARED_LOGIN"
 		# Enable debug print
 		# ONESSH_DEBUG=1
 		# Enable bash option \`set -x\`
@@ -151,8 +154,6 @@ _configure() {
 		>&2 echo "Importing SSH keys from \"$ONESSH_IMPORT_KEYFILE\"."
 		cp "$ONESSH_IMPORT_KEYFILE" "$ONESSH_CHAD_KEYFILE"
 	else
-		# shellcheck disable=SC2206
-		ONESSH_ALLOWED_USERS_ARR=(${ONESSH_ALLOWED_USERS})
 		for user in "${ONESSH_ALLOWED_USERS_ARR[@]}"; do
 			ssh-import-id "lp:$user" -o "$ONESSH_CHAD_KEYFILE"
 		done
