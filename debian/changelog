@@ -1,6 +1,7 @@
 onessh (0.4.1) unstable; urgency=medium
 
   * Fix ONESSH_SHARED_LOGIN behavior.
+  * Fix cleanup of scheduled checkout jobs.
 
  -- Atlas Yu <atlas.yu@canonical.com>  Thu, 19 Dec 2024 14:20:58 +0800
 
