@@ -22,13 +22,6 @@ in the SSH key file and get all the launchpad users and set `ONESSH_ALLOWED_USER
 sudo ONESSH_IMPORT_KEYFILE=/etc/ssh/authorized_keys dpkg -i onessh_amd64.deb
 ```
 
-Another configurable is `ONESSH_SHARED_LOGIN` which controls the shared
-login behavior.
-
-    - "all": (default) all users can login when no user is checked-in.
-    - "one": only the checked-in user.
-    - "none": disable shared login.
-
 if `ONESSH_SHARED_USERS` is not defined, then the current user will be
 considered to be the "shared user".
 
