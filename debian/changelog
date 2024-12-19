@@ -1,4 +1,4 @@
-onessh (0.4.1) unstable; urgency=medium
+onessh (0.4.1) stable; urgency=medium
 
   * Fix ONESSH_SHARED_LOGIN behavior.
   * Fix cleanup of scheduled checkout jobs.
