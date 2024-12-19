@@ -3,6 +3,7 @@ onessh (0.4.0) unstable; urgency=medium
   * Add environment variable ONESSH_IMPORT_KEYFILE in configuration time to
     set ONESSH_ALLOWED_USERS automatically and copy the keyfile instead of
     importing keys for each user via "ssh-import-id".
+  * Add a new command "env" to print the environment variables for OneSSH shell.
 
  -- Atlas Yu <atlas.yu@canonical.com>  Thu, 19 Dec 2024 11:34:37 +0800
 
